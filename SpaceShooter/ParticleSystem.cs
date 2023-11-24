@@ -17,6 +17,19 @@ namespace SpaceShooter
         public ParticleSystem(Vector2 position, Vector2 size, string identifier, string type) : base(position, size, identifier)
         {
             this.type = type;
+            texture = Common.textures["projectile"];
+        }
+
+        void RunSimulation(){
+            switch(type){
+                case "explosion":
+
+                break;
+            }
+        }
+
+        void EmitParticle(){
+
         }
     }
 }

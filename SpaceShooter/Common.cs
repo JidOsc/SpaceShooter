@@ -12,10 +12,19 @@ namespace SpaceShooter
 {
     internal class Common
     {
+        static public Random random = new Random();
+
+        public static List<Dictionary<List<int>[], Dictionary<short, string>>> listOfDictOfListOfShortAndDictOfShortAndString; 
+
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>()
         {
-            {"player", null }
-            //"enemy", null }
+            {"player2", null },
+            {"projectile", null},
+            {"enemy2", null }
+        };
+
+        public static Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>(){
+            {"scoreFont", null}
         };
 
         public static void LoadContent(ContentManager contentManager)
@@ -24,11 +33,14 @@ namespace SpaceShooter
             {
                 textures[textureName] = contentManager.Load<Texture2D>(textureName);
             }
+            foreach(string fontName in fonts.Keys){
+                fonts[fontName] = contentManager.Load<SpriteFont>(fontName);
+            }
         }
 
         public static float VectorToRotation(Vector2 delta)
         {
-            return 1f;
+            return (float)Math.Atan2(delta.Y, delta.X);;
         }
 
         public static Vector2 RotationToVector(float rotation)

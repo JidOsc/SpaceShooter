@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceShooter
 {
-    internal class GameObject
+    internal abstract class GameObject
     {
         public Vector2
             position,
@@ -24,31 +24,52 @@ namespace SpaceShooter
         public float
             rotation = 0.1f;
 
+        public Color
+            color = Color.White;
+
+        public Rectangle
+            hitbox;
+
+        public short
+            layer;
+
+        public bool
+            debug = false;
+
         public GameObject(Vector2 position, Vector2 size, string identifier)
         {
             this.position = position;
             this.size = size;
             this.identifier = identifier;
+
+            hitbox = new Rectangle(position.ToPoint(), size.ToPoint());
         }
 
-        public void Update()
+        public virtual void Update(GameTime gameTime)
         {
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                 texture, 
                 new Rectangle(position.ToPoint(), size.ToPoint()),
                 null, 
-                Color.White, 
+                color, 
                 rotation, 
                 new Vector2(texture.Width / 2, texture.Height / 2), 
                 SpriteEffects.None, 
-                1
+                layer
                 );
 
+            if(debug){
+                spriteBatch.Draw(
+                    Common.textures["projectile"], 
+                    hitbox.Location.ToVector2(), 
+                    new Rectangle(hitbox.Location, hitbox.Size),
+                    Color.Red * 0.5f);
+            }
             /*spriteBatch.Draw(
                 texture,
                 new Rectangle(position.ToPoint(), size.ToPoint()),

@@ -14,9 +14,16 @@ namespace SpaceShooter
         public string
             text;
 
+        public SpriteFont 
+            font;
+
         public Label(Vector2 position, Vector2 size, string identifier, string text) : base(position, size, identifier)
         {
             this.text = text;
+        }
+
+        override public void Draw(SpriteBatch _spriteBatch){
+            _spriteBatch.DrawString(font, text, position, color);
         }
     }
 }

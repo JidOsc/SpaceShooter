@@ -18,5 +18,12 @@ namespace SpaceShooter
         {
             this.velocity = velocity;
         }
+
+        override public void Update(GameTime gameTimev)
+        {
+            position += velocity;
+            hitbox.Location = (position - size/2).ToPoint();
+            //hitbox.Location = position.ToPoint();
+        }
     }
 }

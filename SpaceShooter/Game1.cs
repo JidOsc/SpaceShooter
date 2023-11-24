@@ -15,6 +15,9 @@ namespace SpaceShooter
         private SpriteBatch _spriteBatch;
 
         public static MouseState mouseState;
+        public static KeyboardState keyboardState;
+
+        public static Rectangle window;
 
         Level level;
 
@@ -32,6 +35,12 @@ namespace SpaceShooter
             Common.LoadContent(Content);
             level = new Level();
 
+            ToggleFullscreen(true);
+
+            window.Width = _graphics.PreferredBackBufferWidth;
+            window.Height = _graphics.PreferredBackBufferHeight;
+            window.Location = Window.Position;
+
             base.Initialize();
         }
 
@@ -46,13 +55,14 @@ namespace SpaceShooter
         protected override void Update(GameTime gameTime)
         {
             mouseState = Mouse.GetState();
+            keyboardState = Keyboard.GetState();
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             if (level != null)
             {
-                level.Update();
+                level.Update(gameTime);
             }
 
             // TODO: Add your update logic here
@@ -62,9 +72,9 @@ namespace SpaceShooter
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             if (level != null)
             {
                 level.Draw(_spriteBatch);
@@ -78,6 +88,17 @@ namespace SpaceShooter
         void StartLevel()
         {
             level = new Level();
+        }
+
+        void ToggleFullscreen(bool toggled){
+            Window.IsBorderless = toggled;
+            Window.AllowUserResizing = toggled;
+
+            if(toggled){
+                _graphics.PreferredBackBufferHeight = 1080;
+                _graphics.PreferredBackBufferWidth = 1920;
+                _graphics.ApplyChanges();
+            }
         }
     }
 }
