@@ -14,8 +14,6 @@ namespace SpaceShooter
     {
         static public Random random = new Random();
 
-        public static List<Dictionary<List<int>[], Dictionary<short, string>>> listOfDictOfListOfShortAndDictOfShortAndString; 
-
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>()
         {
             {"player2", null },
@@ -23,8 +21,11 @@ namespace SpaceShooter
             {"enemy2", null }
         };
 
-        public static Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>(){
-            {"scoreFont", null}
+        public static Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>()
+        {
+            {"scoreFont", null},
+            {"titleFont", null},
+            {"startFont", null}
         };
 
         public static void LoadContent(ContentManager contentManager)
@@ -40,7 +41,7 @@ namespace SpaceShooter
 
         public static float VectorToRotation(Vector2 delta)
         {
-            return (float)Math.Atan2(delta.Y, delta.X);;
+            return (float)Math.Atan2(delta.Y, delta.X);
         }
 
         public static Vector2 RotationToVector(float rotation)

@@ -20,9 +20,11 @@ namespace SpaceShooter
         public Label(Vector2 position, Vector2 size, string identifier, string text) : base(position, size, identifier)
         {
             this.text = text;
+            font = Common.fonts[identifier.Replace("Text", "Font")];
         }
 
-        override public void Draw(SpriteBatch _spriteBatch){
+        override public void Draw(SpriteBatch _spriteBatch)
+        {
             _spriteBatch.DrawString(font, text, position, color);
         }
     }

@@ -11,8 +11,7 @@ namespace SpaceShooter
 {
     internal class EnemyShip : KineticObject
     {
-        public float
-            health = 1;
+        public ShipStats stats = new("Peter");
 
         public EnemyShip(Vector2 position, Vector2 size, string identifier, Vector2 velocity) : base(position, size, identifier, velocity)
         {
@@ -21,7 +20,11 @@ namespace SpaceShooter
 
         public override void Update(GameTime gameTime)
         {
-            velocity = Level.GetRelationToPlayer(this) * -1;
+            size = new Vector2(stats.mass * 64, stats.mass * 64);
+            hitbox.Size = size.ToPoint();
+            //TODO gör en klass för skepp i allmänhet och flytta mass, speed osv dit
+
+            velocity = Level.GetRelationToPlayer(this) * -1 * stats.speed;
             position += velocity;
             
             hitbox.Location = (position - size/2).ToPoint();

@@ -22,16 +22,14 @@ namespace SpaceShooter
             texture;
 
         public float
-            rotation = 0.1f;
+            rotation = 0.1f,
+            layer;
 
         public Color
             color = Color.White;
 
         public Rectangle
             hitbox;
-
-        public short
-            layer;
 
         public bool
             debug = false;

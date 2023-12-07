@@ -19,7 +19,8 @@ namespace SpaceShooter
 
         public static Rectangle window;
 
-        Level level;
+        static Level level;
+        static Menu menu;
 
         public Game1()
         {
@@ -33,7 +34,9 @@ namespace SpaceShooter
             // TODO: Add your initialization logic here
 
             Common.LoadContent(Content);
-            level = new Level();
+            
+            menu = new Menu();
+            //level = new Level();
 
             ToggleFullscreen(true);
 
@@ -60,7 +63,11 @@ namespace SpaceShooter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (level != null)
+            if (menu != null)
+            {
+                menu.Update(gameTime);
+            }
+            else if(level != null)
             {
                 level.Update(gameTime);
             }
@@ -74,11 +81,17 @@ namespace SpaceShooter
         {
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            if (level != null)
+            _spriteBatch.Begin(sortMode: SpriteSortMode.BackToFront, samplerState: SamplerState.PointClamp);
+
+            if (menu != null)
+            {
+                menu.Draw(_spriteBatch);
+            }
+            else if(level != null)
             {
                 level.Draw(_spriteBatch);
             }
+
             _spriteBatch.End();
             // TODO: Add your drawing code here
 
@@ -90,14 +103,31 @@ namespace SpaceShooter
             level = new Level();
         }
 
-        void ToggleFullscreen(bool toggled){
+        void ToggleFullscreen(bool toggled)
+        {
             Window.IsBorderless = toggled;
             Window.AllowUserResizing = toggled;
 
-            if(toggled){
+            if(toggled)
+            {
                 _graphics.PreferredBackBufferHeight = 1080;
                 _graphics.PreferredBackBufferWidth = 1920;
                 _graphics.ApplyChanges();
+            }
+        }
+
+        public static void ExecuteButton(string button)
+        {
+            switch(button)
+            {
+                case "startText":
+                    level = new Level();
+                    menu = null;
+                    break;
+                
+                case "exitButton":
+                    
+                    break;
             }
         }
     }

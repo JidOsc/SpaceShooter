@@ -20,10 +20,10 @@ namespace SpaceShooter
         }
 
         override public void Update(GameTime gameTimev)
-        {
+        { 
+            //bästa koden 👍💯 
             position += velocity;
             hitbox.Location = (position - size/2).ToPoint();
-            //hitbox.Location = position.ToPoint();
         }
     }
 }
