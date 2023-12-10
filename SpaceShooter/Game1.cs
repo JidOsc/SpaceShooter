@@ -9,6 +9,23 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceShooter
 {
+    /* ATT GÖRA LISTA
+     *
+     * - Tweaka spawnrate samt gör så du kan dö
+     * - När du dör, spara Score och ombett namn till fil 
+     * - Efter en viss mängd score får du välja mellan uppgraderingar
+     * - Spara uppgraderingstyper i en fil
+     * - 
+     * 
+     * om tid
+     * - Playfab server som sparar highscores
+     * - Olika fiendetyper
+     * - Stjärnor och planeter i bakgrunden
+     * - Ljudeffekter för skott, explosion och att åka
+     * - explosionanimation
+     * - annan animation för skeppet när den åker
+     * 
+     */
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
