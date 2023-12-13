@@ -25,7 +25,8 @@ namespace SpaceShooter
         {
             {"scoreFont", null},
             {"titleFont", null},
-            {"startFont", null}
+            {"startFont", null},
+            {"gameoverFont", null}
         };
 
         public static void LoadContent(ContentManager contentManager)

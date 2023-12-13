@@ -13,19 +13,27 @@ namespace SpaceShooter
 {
     internal class Level
     {
-        public static Dictionary<string, List<GameObject>> gameObjects;
+        public static Dictionary<string, List<GameObject>> 
+            gameObjects;
         
         static List<GameObject> 
             tempGameObjects,
             toDeleteGameObjects;
 
+        static PlayerShip 
+            player;
+
         Timer
-        spawnTimer;
+            spawnTimer;
+
         public float
             spawnDelay = 2000f;
 
         public int
             score;
+
+        bool
+            isChecking = false;
 
         Label 
             scoreText,
@@ -37,10 +45,7 @@ namespace SpaceShooter
             tempGameObjects = new List<GameObject>();
             toDeleteGameObjects = new();
 
-            spawnTimer = new(spawnDelay);
-            spawnTimer.Elapsed += OnSpawnTimerStop;
-            spawnTimer.AutoReset = true;
-            spawnTimer.Start();
+            StartSpawnTimer();
 
             scoreText = new(new Vector2(10, 10), new Vector2(64, 64), "scoreText", "SCORE: ");
             scoreText.font = Common.fonts["scoreFont"];
@@ -51,13 +56,10 @@ namespace SpaceShooter
             projectileAmount = new(new Vector2(300, 30), new Vector2(64, 64), "scoreText", "PROJECTILES: ");
             projectileAmount.font = Common.fonts["scoreFont"];
 
+            player = new PlayerShip(new Vector2(500, 250), new Vector2(64, 64), "player", Vector2.Zero);
 
             gameObjects = new Dictionary<string, List<GameObject>>()
             {
-                {"players", new List<GameObject>(){
-                    new PlayerShip(new Vector2(500, 250), new Vector2(64, 64), "player", Vector2.Zero),
-                }},
-
                 {"enemies", new List<GameObject>()},
 
                 {"projectiles", new List<GameObject>()}
@@ -66,73 +68,81 @@ namespace SpaceShooter
 
         public void Update(GameTime gameTime)
         {
-            foreach(PlayerShip playerShip in gameObjects["players"])
+            if (!isChecking)
             {
-                playerShip.Update(gameTime);
-            }
+                isChecking = true;
+                player.Update(gameTime);
 
-            foreach(List<GameObject> lists in gameObjects.Values)
-            {
-                foreach(GameObject gameObject in lists)
+                foreach (List<GameObject> lists in gameObjects.Values)
                 {
-                    gameObject.Update(gameTime);
-                }
-            }
-
-            foreach(EnemyShip enemyShip in gameObjects["enemies"])
-            {
-                enemyShip.color = Color.White;
-
-                foreach(Projectile projectile in gameObjects["projectiles"])
-                {
-                    if(projectile.IsOutOfBounds())
+                    foreach (GameObject gameObject in lists)
                     {
-                        toDeleteGameObjects.Add(projectile);
-                        break;
+                        gameObject.Update(gameTime);
                     }
+                }
 
-                    if(enemyShip.hitbox.Intersects(projectile.hitbox))
+                foreach (EnemyShip enemyShip in gameObjects["enemies"])
+                {
+                    enemyShip.color = Color.White;
+
+                    if (enemyShip.hitbox.Intersects(player.hitbox))
                     {
-                        enemyShip.stats.health -= projectile.damage;
-                        enemyShip.color = Color.Red;
+                        player.stats.health -= 0.5f;
 
-                        if(enemyShip.stats.health <= 0)
+                        if(player.stats.health <= 0)
                         {
-                            EnemyDestroyed();
-                            toDeleteGameObjects.Add(enemyShip);
+                            GameOver();
+                            break;
                         }
 
-                        toDeleteGameObjects.Add(projectile);
+                        EnemyDestroyed();
+                    }
+
+                    foreach (Projectile projectile in gameObjects["projectiles"])
+                    {
+                        if (projectile.IsOutOfBounds())
+                        {
+                            toDeleteGameObjects.Add(projectile);
+                            break;
+                        }
+
+                        if (enemyShip.hitbox.Intersects(projectile.hitbox))
+                        {
+                            EnemyShot(enemyShip, projectile);
+                        }
+                    }
+
+
+                }
+                foreach (GameObject tempGameObject in tempGameObjects)
+                {
+                    if (tempGameObject is EnemyShip)
+                    {
+                        gameObjects["enemies"].Add(tempGameObject);
+                    }
+                    else if (tempGameObject is Projectile)
+                    {
+                        gameObjects["projectiles"].Add(tempGameObject);
                     }
                 }
-            }
-            foreach(GameObject tempGameObject in tempGameObjects)
-            {
-                if(tempGameObject is EnemyShip)
-                {
-                    gameObjects["enemies"].Add(tempGameObject);
-                }
-                else if(tempGameObject is Projectile)
-                {
-                    gameObjects["projectiles"].Add(tempGameObject);
-                }   
-            }
-            
-            tempGameObjects.Clear();
 
-            foreach(GameObject gameObject in toDeleteGameObjects)
-            {
-                if(gameObject is EnemyShip)
-                {
-                    gameObjects["enemies"].Remove(gameObject);
-                }
-                else if(gameObject is Projectile)
-                {
-                    gameObjects["projectiles"].Remove(gameObject);
-                }
-            }
+                tempGameObjects.Clear();
 
-            toDeleteGameObjects.Clear();
+                foreach (GameObject gameObject in toDeleteGameObjects)
+                {
+                    if (gameObject is EnemyShip)
+                    {
+                        gameObjects["enemies"].Remove(gameObject);
+                    }
+                    else if (gameObject is Projectile)
+                    {
+                        gameObjects["projectiles"].Remove(gameObject);
+                    }
+                }
+
+                toDeleteGameObjects.Clear();
+                isChecking = false;
+            }
 
             enemyAmount.text = "ENEMIES: " + gameObjects["enemies"].Count;
             projectileAmount.text = "PROJECTILES: " + gameObjects["projectiles"].Count;
@@ -140,14 +150,40 @@ namespace SpaceShooter
             scoreText.text = "SCORE: " + score;
         }
 
+        void GameOver()
+        {
+            Game1.GameOver();
+        }
+
+        void StartSpawnTimer()
+        {
+            spawnTimer = new(spawnDelay);
+            spawnTimer.Elapsed += OnSpawnTimerStop;
+            spawnTimer.AutoReset = true;
+            spawnTimer.Start();
+        }
+
+        void EnemyShot(EnemyShip enemyShip, Projectile projectile)
+        {
+            enemyShip.stats.health -= projectile.damage;
+            enemyShip.color = Color.Red;
+
+            if (enemyShip.stats.health <= 0)
+            {
+                EnemyDestroyed();
+                toDeleteGameObjects.Add(enemyShip);
+            }
+            toDeleteGameObjects.Add(enemyShip);
+        }
+
         void OnSpawnTimerStop(Object source, ElapsedEventArgs e){
-            //spawnTimer.Stop();
             SpawnEnemy();
-            //spawnTimer.Start(); 
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            player.Draw(spriteBatch);
+
             foreach(List<GameObject> lists in gameObjects.Values)
             {
                 foreach(GameObject gameObject in lists)
@@ -162,7 +198,7 @@ namespace SpaceShooter
         }
 
         public static Vector2 GetRelationToPlayer(EnemyShip enemy){
-            return Vector2.Normalize(enemy.position - gameObjects["players"][0].position);
+            return Vector2.Normalize(enemy.position - player.position);
         }
 
         void SpawnEnemy(){

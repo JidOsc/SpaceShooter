@@ -11,7 +11,6 @@ namespace SpaceShooter
 {
     internal class InterfaceElement : GameObject
     {
-
         public InterfaceElement(Vector2 position, Vector2 size, string identifier) : base(position, size, identifier)
         {
 

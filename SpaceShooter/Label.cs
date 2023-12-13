@@ -21,6 +21,7 @@ namespace SpaceShooter
         {
             this.text = text;
             font = Common.fonts[identifier.Replace("Text", "Font")];
+            //hämtar font med samma namn som identifier, fast text ersätts av font
         }
 
         override public void Draw(SpriteBatch _spriteBatch)

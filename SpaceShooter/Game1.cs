@@ -33,11 +33,11 @@ namespace SpaceShooter
 
         public static MouseState mouseState;
         public static KeyboardState keyboardState;
-
         public static Rectangle window;
 
         static Level level;
         static Menu menu;
+        static EndScreen endScreen;
 
         public Game1()
         {
@@ -66,10 +66,7 @@ namespace SpaceShooter
 
         protected override void LoadContent()
         {
-
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
@@ -88,8 +85,10 @@ namespace SpaceShooter
             {
                 level.Update(gameTime);
             }
-
-            // TODO: Add your update logic here
+            else if(endScreen != null)
+            {
+                endScreen.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -107,6 +106,10 @@ namespace SpaceShooter
             else if(level != null)
             {
                 level.Draw(_spriteBatch);
+            }
+            else if(endScreen != null)
+            {
+                endScreen.Draw(_spriteBatch);
             }
 
             _spriteBatch.End();
@@ -146,6 +149,12 @@ namespace SpaceShooter
                     
                     break;
             }
+        }
+
+        public static void GameOver()
+        {
+            endScreen = new EndScreen(level.score);
+            level = null;
         }
     }
 }

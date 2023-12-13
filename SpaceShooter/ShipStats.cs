@@ -22,7 +22,7 @@ namespace SpaceShooter
         public ShipStats() //konstruktor för spelare
         {
             this.mass = 1f;
-            this.health = 5f;
+            this.health = 1f;
             this.speed = 0.04f;
 
             this.projectilesPerShot = 1f;
