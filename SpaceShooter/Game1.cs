@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,8 +12,9 @@ namespace SpaceShooter
 {
     /* ATT GÖRA LISTA
      *
-     * - Tweaka spawnrate samt gör så du kan dö
-     * - När du dör, spara Score och ombett namn till fil 
+     * - Tweaka spawnrate
+     * - Be om ett namn
+     * - Fixa knappen
      * - Efter en viss mängd score får du välja mellan uppgraderingar
      * - Spara uppgraderingstyper i en fil
      * - 
@@ -39,6 +41,10 @@ namespace SpaceShooter
         static Menu menu;
         static EndScreen endScreen;
 
+        static Dictionary<string, int> highscores;
+
+        static string scoreFilepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"onslaughtHighscores.txt");
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -49,7 +55,7 @@ namespace SpaceShooter
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            CheckIfFileExists();
             Common.LoadContent(Content);
             
             menu = new Menu();
@@ -117,8 +123,19 @@ namespace SpaceShooter
 
             base.Draw(gameTime);
         }
+        static void CheckIfFileExists()
+        {
+            if (File.Exists(scoreFilepath))
+            {
+                highscores = JsonSerializer.Deserialize<Dictionary<string, int>>(File.ReadAllText(scoreFilepath));
+            }
+            else
+            {
+                highscores = new Dictionary<string, int>();
+            }
+        }
 
-        void StartLevel()
+        static void StartLevel()
         {
             level = new Level();
         }
@@ -141,20 +158,69 @@ namespace SpaceShooter
             switch(button)
             {
                 case "startText":
-                    level = new Level();
+                    StartLevel();
                     menu = null;
                     break;
                 
                 case "exitButton":
                     
                     break;
+
+                case "gameoverText":
+                    StartLevel();
+                    endScreen = null;
+                    break;
             }
         }
 
-        public static void GameOver()
+        public static void GameOver(int score)
         {
-            endScreen = new EndScreen(level.score);
+            UpdateHighscore(score);
+
+            endScreen = new EndScreen(score);
+            endScreen.ShowHighscores(highscores);
+
             level = null;
+        }
+
+        static void AddHighscore(int score)
+        {
+            highscores.Add(AskForName(), score);
+        }
+
+        static void UpdateHighscore(int score)
+        {
+            if (highscores.Count >= 10)
+            {
+                if (score > highscores.Values.Min())
+                {
+                    AddHighscore(score);
+                    highscores.Remove(highscores.Keys.Min());
+                }
+            }
+            else
+            {
+                AddHighscore(score);
+            }
+
+            highscores = highscores.OrderByDescending(key => key.Value).ToDictionary(key => key.Key, key => key.Value);
+            SaveHighscore();
+        }
+
+        static void SaveHighscore()
+        {
+            File.WriteAllText(scoreFilepath, JsonSerializer.Serialize(highscores));
+        }
+
+        static string AskForName()
+        {
+            string tempString = "";
+
+            for(int i = 0; i < 5; i++)
+            {
+                tempString += Convert.ToChar(Common.random.Next(97, 122));
+            }
+            return tempString;
         }
     }
 }

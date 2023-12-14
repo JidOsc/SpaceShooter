@@ -22,7 +22,6 @@ namespace SpaceShooter
         {
             size = new Vector2(stats.mass * 64, stats.mass * 64);
             hitbox.Size = size.ToPoint();
-            //TODO gör en klass för skepp i allmänhet och flytta mass, speed osv dit
 
             velocity = Level.GetRelationToPlayer(this) * -1 * stats.speed;
             position += velocity;

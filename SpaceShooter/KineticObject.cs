@@ -23,7 +23,7 @@ namespace SpaceShooter
         { 
             //bästa koden 👍💯 
             position += velocity;
-            hitbox.Location = (position - size/2).ToPoint();
+            hitbox.Location = (position - size / 2).ToPoint();
         }
     }
 }

@@ -35,7 +35,8 @@ namespace SpaceShooter
             {
                 textures[textureName] = contentManager.Load<Texture2D>(textureName);
             }
-            foreach(string fontName in fonts.Keys){
+            foreach(string fontName in fonts.Keys)
+            {
                 fonts[fontName] = contentManager.Load<SpriteFont>(fontName);
             }
         }

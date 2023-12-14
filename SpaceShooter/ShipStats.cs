@@ -23,10 +23,10 @@ namespace SpaceShooter
         {
             this.mass = 1f;
             this.health = 1f;
-            this.speed = 0.04f;
+            this.speed = 0.06f;
 
             this.projectilesPerShot = 1f;
-            this.damage = 1f;
+            this.damage = 0.8f;
             this.projectileSize = 4f;
             this.fireSpeed = 250f;
             this.spread = 0f;

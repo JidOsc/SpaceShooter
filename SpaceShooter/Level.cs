@@ -33,7 +33,8 @@ namespace SpaceShooter
             score;
 
         bool
-            isChecking = false;
+            isChecking = false,
+            isPaused = false;
 
         Label 
             scoreText,
@@ -68,7 +69,7 @@ namespace SpaceShooter
 
         public void Update(GameTime gameTime)
         {
-            if (!isChecking)
+            if (!isChecking && !isPaused)
             {
                 isChecking = true;
                 player.Update(gameTime);
@@ -94,8 +95,6 @@ namespace SpaceShooter
                             GameOver();
                             break;
                         }
-
-                        EnemyDestroyed();
                     }
 
                     foreach (Projectile projectile in gameObjects["projectiles"])
@@ -110,6 +109,7 @@ namespace SpaceShooter
                         {
                             EnemyShot(enemyShip, projectile);
                         }
+
                     }
 
 
@@ -141,6 +141,12 @@ namespace SpaceShooter
                 }
 
                 toDeleteGameObjects.Clear();
+
+                if(score == 5)
+                {
+                    ChooseUpgrade();
+                }
+
                 isChecking = false;
             }
 
@@ -150,9 +156,16 @@ namespace SpaceShooter
             scoreText.text = "SCORE: " + score;
         }
 
+        void ChooseUpgrade()
+        {
+            isPaused = true;
+
+
+        }
+
         void GameOver()
         {
-            Game1.GameOver();
+            Game1.GameOver(score);
         }
 
         void StartSpawnTimer()
@@ -173,7 +186,8 @@ namespace SpaceShooter
                 EnemyDestroyed();
                 toDeleteGameObjects.Add(enemyShip);
             }
-            toDeleteGameObjects.Add(enemyShip);
+
+            toDeleteGameObjects.Add(projectile);
         }
 
         void OnSpawnTimerStop(Object source, ElapsedEventArgs e){
@@ -212,12 +226,14 @@ namespace SpaceShooter
                 ));
         }
 
-        void EnemyDestroyed(){
+        void EnemyDestroyed()
+        {
             score += 1;
-            spawnTimer.Interval = spawnDelay * Math.Pow(0.98, score);
+            spawnTimer.Interval = spawnDelay * Math.Pow(0.99, score);
         }
         
-        Vector2 RandomPositionOutside(){
+        Vector2 RandomPositionOutside()
+        {
             Vector2 tempPosition = Vector2.Zero;
             
             switch(Common.random.Next(1, 5)){
@@ -245,7 +261,8 @@ namespace SpaceShooter
             return tempPosition;
         }
 
-        public static void SpawnProjectile(Projectile projectile){
+        public static void SpawnProjectile(Projectile projectile)
+        {
             Debug.WriteLine("projektil skapad");
             tempGameObjects.Add(projectile);
         }

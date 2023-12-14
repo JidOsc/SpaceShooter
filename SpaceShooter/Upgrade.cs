@@ -16,6 +16,12 @@ namespace SpaceShooter
             statsModifier = stats;
         }
 
+        public void ChangeRandomStat()
+        {
+            int randomField = Common.random.Next(0, statsModifier.GetType().GetFields().Length);
+            statsModifier.GetType().GetFields()[randomField].SetValue(statsModifier, Common.random.Next(-5, 5));
+        }
+
         public void ModifyStats(PlayerShip player)
         {
             var fields = statsModifier.GetType().GetFields();
