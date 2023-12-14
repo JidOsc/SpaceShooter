@@ -38,7 +38,7 @@ namespace SpaceShooter
                         new Vector2(Game1.window.Size.X / 2 - 500, 600),
                         new Vector2(200, 50),
                         "gameoverText",
-                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                        "Retry?"
                         )
                     }
                 }
@@ -86,7 +86,7 @@ namespace SpaceShooter
         {
             Label highscoreList = (Label)elements["labels"][0];
 
-            highscoreList.text = "Highscores:\n";
+            highscoreList.text = "Highscores: \n";
 
             for(int i = 0; i < highscores.Count; i++)
             {

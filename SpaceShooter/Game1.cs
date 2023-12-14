@@ -16,10 +16,12 @@ namespace SpaceShooter
      * - Be om ett namn
      * - Fixa knappen
      * - Efter en viss mängd score får du välja mellan uppgraderingar
-     * - Spara uppgraderingstyper i en fil
+     * - 
      * - 
      * 
      * om tid
+     * - Inte omedelbar rotation
+     * - Spara uppgraderingstyper i en fil
      * - Playfab server som sparar highscores
      * - Olika fiendetyper
      * - Stjärnor och planeter i bakgrunden

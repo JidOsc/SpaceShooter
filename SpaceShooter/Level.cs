@@ -63,7 +63,9 @@ namespace SpaceShooter
             {
                 {"enemies", new List<GameObject>()},
 
-                {"projectiles", new List<GameObject>()}
+                {"projectiles", new List<GameObject>()},
+
+                {"upgrades", new List<GameObject>()}
             };
         }
 
@@ -109,10 +111,7 @@ namespace SpaceShooter
                         {
                             EnemyShot(enemyShip, projectile);
                         }
-
                     }
-
-
                 }
                 foreach (GameObject tempGameObject in tempGameObjects)
                 {
@@ -144,7 +143,7 @@ namespace SpaceShooter
 
                 if(score == 5)
                 {
-                    ChooseUpgrade();
+                    //ChooseUpgrade();
                 }
 
                 isChecking = false;
@@ -160,7 +159,21 @@ namespace SpaceShooter
         {
             isPaused = true;
 
+            short numberOfChoices = 3;
 
+            for(int i = 0; i < numberOfChoices; i++)
+            {
+                gameObjects["upgrades"].Add(new Upgrade(
+                    new Vector2((Game1.window.Width - 40) / numberOfChoices * i, 300),
+                    new Vector2(200, 400),
+                    "upgrade"
+                    ));
+            }
+
+            foreach (Upgrade upgrade in gameObjects["upgrades"])
+            {
+                upgrade.ChangeRandomStat();
+            }
         }
 
         void GameOver()

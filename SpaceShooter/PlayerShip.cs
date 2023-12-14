@@ -60,23 +60,6 @@ namespace SpaceShooter
                 velocity /= 1.02f;
             }
 
-            if (Game1.keyboardState.IsKeyDown(Keys.Q))
-            {
-                Upgrade upgrade = new Upgrade(
-                    new ShipStats(
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0
-                        ));
-
-                upgrade.ModifyStats(this);
-            }
-
             position += velocity;
             hitbox.Location = position.ToPoint();
 

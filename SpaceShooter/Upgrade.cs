@@ -3,15 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using System.Timers;
 
 namespace SpaceShooter
 {
-    internal class Upgrade
+    internal class Upgrade : InterfaceElement
     {
         public ShipStats statsModifier = new();
 
-        public Upgrade(ShipStats stats)
+        public Upgrade(Vector2 position, Vector2 size, string identifier) : base(position, size, identifier)
+        {
+
+        }
+
+        public Upgrade(Vector2 position, Vector2 size, string identifier, ShipStats stats) : base(position, size, identifier)
         {
             statsModifier = stats;
         }
@@ -19,7 +28,7 @@ namespace SpaceShooter
         public void ChangeRandomStat()
         {
             int randomField = Common.random.Next(0, statsModifier.GetType().GetFields().Length);
-            statsModifier.GetType().GetFields()[randomField].SetValue(statsModifier, Common.random.Next(-5, 5));
+            statsModifier.GetType().GetFields()[randomField].SetValue(statsModifier, Common.random.Next(-5, 6));
         }
 
         public void ModifyStats(PlayerShip player)

@@ -12,13 +12,13 @@ namespace SpaceShooter
     internal class Button : Label
     {
         Color
-            backgroundColor = Color.Aqua,
+            startColor = Color.LightGray,
             currentColor;
 
         public Button(Vector2 position, Vector2 size, string identifier, string text) : base(position, size, identifier, text)
         {
             texture = Common.textures["projectile"];
-            currentColor = backgroundColor;
+            currentColor = startColor;
         }
 
         public override void Draw(SpriteBatch _spriteBatch)
@@ -53,11 +53,11 @@ namespace SpaceShooter
 
             if(mouseInside)
             {
-                currentColor = backgroundColor * 0.8f;
+                currentColor = startColor * 0.6f;
             }
             else
             {
-                currentColor = backgroundColor;
+                currentColor = startColor;
             }
 
             return mouseInside;
