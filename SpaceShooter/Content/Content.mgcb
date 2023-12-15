@@ -101,3 +101,10 @@
 /processorParam:TextureFormat=Compressed
 /build:titleFont.spritefont
 
+#begin upgradeFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:upgradeFont.spritefont
+

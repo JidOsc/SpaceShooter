@@ -11,24 +11,38 @@ using System.Timers;
 
 namespace SpaceShooter
 {
-    internal class Upgrade : InterfaceElement
+    internal class Upgrade : Button
     {
         public ShipStats statsModifier = new();
+        string description = "";
 
-        public Upgrade(Vector2 position, Vector2 size, string identifier) : base(position, size, identifier)
+        public Upgrade(Vector2 position, Vector2 size, string identifier, string text) : base(position, size, identifier, text)
         {
-
+            texture = Common.textures["projectile"];
         }
 
-        public Upgrade(Vector2 position, Vector2 size, string identifier, ShipStats stats) : base(position, size, identifier)
+        public Upgrade(Vector2 position, Vector2 size, string identifier, string text, ShipStats stats) : base(position, size, identifier, text)
         {
+            texture = Common.textures["projectile"];
             statsModifier = stats;
+        }
+
+        public void GenerateText()
+        {
+            text = "Upgrade:\n" + description;
         }
 
         public void ChangeRandomStat()
         {
             int randomField = Common.random.Next(0, statsModifier.GetType().GetFields().Length);
-            statsModifier.GetType().GetFields()[randomField].SetValue(statsModifier, Common.random.Next(-5, 6));
+
+            var field = statsModifier.GetType().GetFields()[randomField];
+            short valueToModifyBy = (short)Common.random.Next(-5, 6);
+
+            field.SetValue(statsModifier, valueToModifyBy);
+            description = field.Name + ": " + valueToModifyBy;
+
+            GenerateText();
         }
 
         public void ModifyStats(PlayerShip player)

@@ -16,7 +16,7 @@ namespace SpaceShooter
 
         public Projectile(Vector2 position, Vector2 size, string identifier, Vector2 velocity, Color color, float damage) : base(position, size, identifier, velocity)
         {
-            layer = 0.2f;
+            layer = 0.4f;
             texture = Common.textures["projectile"];
             this.color = color;
             this.damage = damage;

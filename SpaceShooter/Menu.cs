@@ -49,16 +49,10 @@ namespace SpaceShooter
 
             foreach(Button button in elements["buttons"])
             {
-                Debug.WriteLine("oh");
-
                 if(button.MouseInside(Game1.mouseState.Position))
                 {
-                    Debug.WriteLine("mus inne 😋");
-
                     if(Game1.mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        Debug.WriteLine("tryckt");
-
                         button.Pressed();
                     }
                 }

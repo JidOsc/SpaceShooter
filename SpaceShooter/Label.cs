@@ -21,12 +21,13 @@ namespace SpaceShooter
         {
             this.text = text;
             font = Common.fonts[identifier.Replace("Text", "Font")];
+            layer = 0.1f;
             //hämtar font med samma namn som identifier, fast text ersätts av font
         }
 
         override public void Draw(SpriteBatch _spriteBatch)
         {
-            _spriteBatch.DrawString(font, text, position, color);
+            _spriteBatch.DrawString(font, text, position, color, 0, Vector2.Zero, 1, SpriteEffects.None, layer);
         }
     }
 }

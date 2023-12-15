@@ -16,6 +16,7 @@ namespace SpaceShooter
         public EnemyShip(Vector2 position, Vector2 size, string identifier, Vector2 velocity) : base(position, size, identifier, velocity)
         {
             texture = Common.textures["enemy2"];
+            layer = 0.3f;
         }
 
         public override void Update(GameTime gameTime)

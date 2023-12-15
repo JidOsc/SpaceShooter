@@ -141,12 +141,26 @@ namespace SpaceShooter
 
                 toDeleteGameObjects.Clear();
 
-                if(score == 5)
+                if(score == 1)
                 {
-                    //ChooseUpgrade();
+                    ChooseUpgrade();
                 }
 
                 isChecking = false;
+            }
+
+            else if(isPaused && !isChecking)
+            {
+                foreach(Button button in gameObjects["upgrades"])
+                {
+                    if (button.MouseInside(Game1.mouseState.Position))
+                    {
+                        if (Game1.mouseState.LeftButton == ButtonState.Pressed)
+                        {
+                            button.Pressed();
+                        }
+                    }
+                }
             }
 
             enemyAmount.text = "ENEMIES: " + gameObjects["enemies"].Count;
@@ -160,13 +174,21 @@ namespace SpaceShooter
             isPaused = true;
 
             short numberOfChoices = 3;
+            short margin = 200;
+            short width = 200;
 
             for(int i = 0; i < numberOfChoices; i++)
             {
                 gameObjects["upgrades"].Add(new Upgrade(
-                    new Vector2((Game1.window.Width - 40) / numberOfChoices * i, 300),
-                    new Vector2(200, 400),
-                    "upgrade"
+                    new Vector2( 
+                        ((Game1.window.Width - margin * 2) 
+                        / numberOfChoices
+                        - width / 2)
+                        * (i + 1), 
+                        300),
+                    new Vector2(width, 400),
+                    "upgradeText",
+                    "Upgrade: " + i
                     ));
             }
 

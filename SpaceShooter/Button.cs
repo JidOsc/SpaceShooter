@@ -19,6 +19,7 @@ namespace SpaceShooter
         {
             texture = Common.textures["projectile"];
             currentColor = startColor;
+            layer = 0;
         }
 
         public override void Draw(SpriteBatch _spriteBatch)
@@ -27,14 +28,24 @@ namespace SpaceShooter
                 texture,
                 position,
                 new Rectangle(position.ToPoint(), size.ToPoint()),
-                currentColor
+                currentColor, 
+                0, 
+                Vector2.Zero, 
+                1, 
+                SpriteEffects.None, 
+                layer + 0.01f
                 );
 
             _spriteBatch.DrawString(
                 font,
                 text,
                 (position + size / 2 - font.MeasureString(text) / 2),
-                Color.Black
+                Color.Black, 
+                0, 
+                Vector2.Zero, 
+                1, 
+                SpriteEffects.None, 
+                layer
                 );
         }
 

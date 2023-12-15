@@ -35,7 +35,7 @@ namespace SpaceShooter
                 {"buttons", new List<InterfaceElement>()
                     {
                     new Button(
-                        new Vector2(Game1.window.Size.X / 2 - 500, 600),
+                        new Vector2(Game1.window.Size.X / 2 - 100, 600),
                         new Vector2(200, 50),
                         "gameoverText",
                         "Retry?"

@@ -24,7 +24,7 @@ namespace SpaceShooter
             shotDelay = new Timer(stats.fireSpeed);
             shotDelay.Elapsed += OnTimerStop;
 
-            layer = 0;
+            layer = 0.2f;
 
             texture = Common.textures["player2"];
         }

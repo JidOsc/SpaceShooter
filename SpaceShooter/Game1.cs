@@ -16,8 +16,6 @@ namespace SpaceShooter
      * - Be om ett namn
      * - Fixa knappen
      * - Efter en viss mängd score får du välja mellan uppgraderingar
-     * - 
-     * - 
      * 
      * om tid
      * - Inte omedelbar rotation
