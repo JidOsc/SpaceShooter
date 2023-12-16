@@ -23,11 +23,10 @@ namespace SpaceShooter
         static PlayerShip 
             player;
 
-        Timer
-            spawnTimer;
-
         public float
-            spawnDelay = 2000f;
+            originSpawnDelay = 2f,
+            spawnDelay = 2f,
+            currentSecondsPassed = 0f;
 
         public int
             score;
@@ -36,26 +35,18 @@ namespace SpaceShooter
             isChecking = false,
             isPaused = false;
 
-        Label 
-            scoreText,
-            enemyAmount,
-            projectileAmount;
+        Label
+            scoreText;
+
+        short
+            previousUpgradeScore = 0;
 
         public Level()
         {
             tempGameObjects = new List<GameObject>();
             toDeleteGameObjects = new();
 
-            StartSpawnTimer();
-
             scoreText = new(new Vector2(10, 10), new Vector2(64, 64), "scoreText", "SCORE: ");
-            scoreText.font = Common.fonts["scoreFont"];
-
-            enemyAmount = new(new Vector2(300, 10), new Vector2(64, 64), "scoreText", "ENEMIES: ");
-            enemyAmount.font = Common.fonts["scoreFont"];
-
-            projectileAmount = new(new Vector2(300, 30), new Vector2(64, 64), "scoreText", "PROJECTILES: ");
-            projectileAmount.font = Common.fonts["scoreFont"];
 
             player = new PlayerShip(new Vector2(500, 250), new Vector2(64, 64), "player", Vector2.Zero);
 
@@ -71,26 +62,35 @@ namespace SpaceShooter
 
         public void Update(GameTime gameTime)
         {
-            if (!isChecking && !isPaused)
+            if (!isChecking && !isPaused) //om vi inte redan kollar listor SAMT spelet inte är pausat
             {
-                isChecking = true;
+                isChecking = true; //vi kollar, så den inte startar flera updates samtidigt
+
+                if(currentSecondsPassed + spawnDelay < gameTime.TotalGameTime.TotalSeconds)
+                {
+                    //när sekunder som gått är större än förra gången + delayen mellan, skapa en fiende
+                    SpawnEnemy();
+                    currentSecondsPassed = (float)gameTime.TotalGameTime.TotalSeconds;
+                }
+
+
                 player.Update(gameTime);
 
                 foreach (List<GameObject> lists in gameObjects.Values)
                 {
                     foreach (GameObject gameObject in lists)
                     {
-                        gameObject.Update(gameTime);
+                        gameObject.Update(gameTime); //uppdatera alla spelobjekt
                     }
                 }
 
-                foreach (EnemyShip enemyShip in gameObjects["enemies"])
+                foreach (EnemyShip enemyShip in gameObjects["enemies"]) //loopa igenom fiender
                 {
                     enemyShip.color = Color.White;
 
                     if (enemyShip.hitbox.Intersects(player.hitbox))
                     {
-                        player.stats.health -= 0.5f;
+                        player.stats.health -= 0.5f; //om kolliderar med spelare
 
                         if(player.stats.health <= 0)
                         {
@@ -113,7 +113,7 @@ namespace SpaceShooter
                         }
                     }
                 }
-                foreach (GameObject tempGameObject in tempGameObjects)
+                foreach (GameObject tempGameObject in tempGameObjects) //lägger till objekt så de inte läggs till samtidigt som vi kollar
                 {
                     if (tempGameObject is EnemyShip)
                     {
@@ -127,7 +127,7 @@ namespace SpaceShooter
 
                 tempGameObjects.Clear();
 
-                foreach (GameObject gameObject in toDeleteGameObjects)
+                foreach (GameObject gameObject in toDeleteGameObjects) //tar bort objekt så de inte raderas samtidigt som vi kollar
                 {
                     if (gameObject is EnemyShip)
                     {
@@ -141,9 +141,10 @@ namespace SpaceShooter
 
                 toDeleteGameObjects.Clear();
 
-                if(score == 1)
+                if(score % 10 == 0 && previousUpgradeScore != score) //var femte poäng väljer du en uppgradering
                 {
                     ChooseUpgrade();
+                    previousUpgradeScore = (short)score;
                 }
 
                 isChecking = false;
@@ -151,20 +152,21 @@ namespace SpaceShooter
 
             else if(isPaused && !isChecking)
             {
-                foreach(Button button in gameObjects["upgrades"])
+                foreach(Upgrade upgrade in gameObjects["upgrades"])
                 {
-                    if (button.MouseInside(Game1.mouseState.Position))
+                    if (upgrade.MouseInside(Game1.mouseState.Position))
                     {
-                        if (Game1.mouseState.LeftButton == ButtonState.Pressed)
+                        if (upgrade.IsPressed())
                         {
-                            button.Pressed();
+                            upgrade.ModifyStats(player);
+
+                            gameObjects["upgrades"].Clear();
+                            isPaused = false;
+                            break;
                         }
                     }
                 }
             }
-
-            enemyAmount.text = "ENEMIES: " + gameObjects["enemies"].Count;
-            projectileAmount.text = "PROJECTILES: " + gameObjects["projectiles"].Count;
 
             scoreText.text = "SCORE: " + score;
         }
@@ -177,7 +179,7 @@ namespace SpaceShooter
             short margin = 200;
             short width = 200;
 
-            for(int i = 0; i < numberOfChoices; i++)
+            for(int i = 0; i < numberOfChoices; i++) //skapar x antal uppgraderingar
             {
                 gameObjects["upgrades"].Add(new Upgrade(
                     new Vector2( 
@@ -194,21 +196,13 @@ namespace SpaceShooter
 
             foreach (Upgrade upgrade in gameObjects["upgrades"])
             {
-                upgrade.ChangeRandomStat();
+                upgrade.ChangeRandomStat(); //just nu ändras uppgraderingarna slumpartat, i framtiden kanske det ändras
             }
         }
 
         void GameOver()
         {
             Game1.GameOver(score);
-        }
-
-        void StartSpawnTimer()
-        {
-            spawnTimer = new(spawnDelay);
-            spawnTimer.Elapsed += OnSpawnTimerStop;
-            spawnTimer.AutoReset = true;
-            spawnTimer.Start();
         }
 
         void EnemyShot(EnemyShip enemyShip, Projectile projectile)
@@ -225,10 +219,6 @@ namespace SpaceShooter
             toDeleteGameObjects.Add(projectile);
         }
 
-        void OnSpawnTimerStop(Object source, ElapsedEventArgs e){
-            SpawnEnemy();
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
             player.Draw(spriteBatch);
@@ -242,8 +232,6 @@ namespace SpaceShooter
             }
 
             scoreText.Draw(spriteBatch);
-            enemyAmount.Draw(spriteBatch);
-            projectileAmount.Draw(spriteBatch);
         }
 
         public static Vector2 GetRelationToPlayer(EnemyShip enemy){
@@ -264,14 +252,14 @@ namespace SpaceShooter
         void EnemyDestroyed()
         {
             score += 1;
-            spawnTimer.Interval = spawnDelay * Math.Pow(0.99, score);
+            spawnDelay = (float)(originSpawnDelay * Math.Pow(0.99, score));
         }
         
         Vector2 RandomPositionOutside()
         {
             Vector2 tempPosition = Vector2.Zero;
             
-            switch(Common.random.Next(1, 5)){
+            switch(Common.random.Next(1, 5)){ //4 scenarion som bestämmer var fienden skapas
                 case 1:
                     tempPosition.X = Game1.window.X - 10;
                     tempPosition.Y = Common.random.Next(Game1.window.Location.Y, Game1.window.Size.Y);

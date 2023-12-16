@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 
 namespace SpaceShooter
@@ -20,6 +16,7 @@ namespace SpaceShooter
             {"projectile", null},
             {"enemy2", null }
         };
+        //dictionaries med alla texturer samt fonts som används
 
         public static Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>()
         {
@@ -27,11 +24,13 @@ namespace SpaceShooter
             {"titleFont", null},
             {"startFont", null},
             {"gameoverFont", null},
-            {"upgradeFont", null}
+            {"upgradeFont", null},
+            {"quitFont", null} 
         };
 
         public static void LoadContent(ContentManager contentManager)
         {
+            //loopar igenom dictionaries och laddar in texturerna
             foreach(string textureName in textures.Keys)
             {
                 textures[textureName] = contentManager.Load<Texture2D>(textureName);
@@ -44,12 +43,7 @@ namespace SpaceShooter
 
         public static float VectorToRotation(Vector2 delta)
         {
-            return (float)Math.Atan2(delta.Y, delta.X);
-        }
-
-        public static Vector2 RotationToVector(float rotation)
-        {
-            return new Vector2(1, 0);
+            return (float)Math.Atan2(delta.Y, delta.X); //kan inte matten helt men gör ett tal från en vektor
         }
     }
 }

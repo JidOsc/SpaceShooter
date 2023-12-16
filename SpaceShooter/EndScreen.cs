@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
 
 namespace SpaceShooter
 {
@@ -17,14 +11,14 @@ namespace SpaceShooter
                 {"labels", new List<InterfaceElement>()
                     {
                     new Label(
-                        new Vector2(Game1.window.Size.X / 2, 100),
+                        new Vector2(Game1.window.Size.X / 2 - 100, 100),
                         new Vector2(1, 1),
                         "gameoverText",
                         "Highscores: "
                         ),
 
                     new Label(
-                        new Vector2(Game1.window.Size.X / 2, 50),
+                        new Vector2(Game1.window.Size.X / 2 - 100, 50),
                         new Vector2(1, 1),
                         "gameoverText",
                         "Game Over"
@@ -35,19 +29,20 @@ namespace SpaceShooter
                 {"buttons", new List<InterfaceElement>()
                     {
                     new Button(
-                        new Vector2(Game1.window.Size.X / 2 - 100, 600),
+                        new Vector2(Game1.window.Size.X / 2 - 100, 800),
                         new Vector2(200, 50),
                         "gameoverText",
                         "Retry?"
-                        )
+                        ),
+
+                    new Button(
+                        new Vector2(Game1.window.Size.X  / 2 - 100, 900),
+                        new Vector2(200, 50),
+                        "quitText",
+                        "Quit")
                     }
                 }
             };
-
-        public EndScreen(int score)
-        {
-            
-        }
 
         public void Update(GameTime gameTime)
         {
@@ -63,7 +58,7 @@ namespace SpaceShooter
             {
                 if (button.MouseInside(Game1.mouseState.Position))
                 {
-                    if (Game1.mouseState.LeftButton == ButtonState.Pressed)
+                    if (button.IsPressed())
                     {
                         button.Pressed();
                     }
@@ -82,7 +77,7 @@ namespace SpaceShooter
             }
         }
 
-        public void ShowHighscores(Dictionary<string, int> highscores)
+        public void ShowHighscores(Dictionary<string, int> highscores) //skapar en string från en dictionary
         {
             Label highscoreList = (Label)elements["labels"][0];
 

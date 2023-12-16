@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SpaceShooter
 {
@@ -61,18 +55,14 @@ namespace SpaceShooter
                 layer
                 );
 
-            if(debug){
+            if(debug)
+            {
                 spriteBatch.Draw(
                     Common.textures["projectile"], 
                     hitbox.Location.ToVector2(), 
                     new Rectangle(hitbox.Location, hitbox.Size),
                     Color.Red * 0.5f);
             }
-            /*spriteBatch.Draw(
-                texture,
-                new Rectangle(position.ToPoint(), size.ToPoint()),
-                Color.White
-                );*/
         }
     }
 }

@@ -13,7 +13,7 @@ namespace SpaceShooter
     {
         public InterfaceElement(Vector2 position, Vector2 size, string identifier) : base(position, size, identifier)
         {
-
+            //varför finns den här klassen? Bra fråga.
         }
     }
 }

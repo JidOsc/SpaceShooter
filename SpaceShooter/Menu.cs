@@ -29,10 +29,16 @@ namespace SpaceShooter
                 {"buttons", new List<InterfaceElement>(){
                     new Button(
                         new Vector2(50, 200),
-                        new Vector2(200, 50),
+                        new Vector2(300, 75),
                         "startText",
                         "Start"
-                    )
+                    ),
+
+                    new Button(
+                        new Vector2(50, 350),
+                        new Vector2(300, 75),
+                        "quitText",
+                        "Quit")
                 }}
             };
         }
@@ -51,7 +57,7 @@ namespace SpaceShooter
             {
                 if(button.MouseInside(Game1.mouseState.Position))
                 {
-                    if(Game1.mouseState.LeftButton == ButtonState.Pressed)
+                    if(button.IsPressed())
                     {
                         button.Pressed();
                     }

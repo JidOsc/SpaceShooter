@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,19 +7,19 @@ namespace SpaceShooter
     internal class Button : Label
     {
         Color
-            startColor = Color.LightGray,
+            startColor = Color.LightGray, //färg på bakgrund
             currentColor;
 
         public Button(Vector2 position, Vector2 size, string identifier, string text) : base(position, size, identifier, text)
         {
-            texture = Common.textures["projectile"];
+            texture = Common.textures["projectile"]; //enfärgade bakgrunden använder samma enpixliga textur
             currentColor = startColor;
             layer = 0;
         }
 
         public override void Draw(SpriteBatch _spriteBatch)
         {
-            _spriteBatch.Draw(
+            _spriteBatch.Draw( //ritar ut bakgrunden, sen texten på knappen
                 texture,
                 position,
                 new Rectangle(position.ToPoint(), size.ToPoint()),
@@ -51,16 +46,21 @@ namespace SpaceShooter
 
         public void Pressed()
         {
-            Game1.ExecuteButton(identifier);
+            Game1.ExecuteButton(identifier); //skickar signal till Game1 om att göra något
         }
         
+        public bool IsPressed()
+        {
+            return Game1.mouseState.LeftButton == ButtonState.Pressed && Game1.previousMouseState.LeftButton != ButtonState.Pressed; //musen nedtryckt för första gången
+        }
+
         public bool MouseInside(Point mousePosition)
         {
             bool mouseInside = 
                 mousePosition.X >= hitbox.Location.X &&
                 mousePosition.X <= hitbox.Size.X + hitbox.Location.X &&
                 mousePosition.Y >= hitbox.Location.Y &&
-                mousePosition.Y <= hitbox.Size.Y + hitbox.Location.Y;
+                mousePosition.Y <= hitbox.Size.Y + hitbox.Location.Y; //höger om vänsterkant, under överkant osv
 
             if(mouseInside)
             {

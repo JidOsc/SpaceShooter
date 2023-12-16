@@ -9,7 +9,7 @@ namespace SpaceShooter
     internal class ShipStats
     {
         public float
-            mass,
+            mass, 
             health,
             speed,
 
@@ -17,46 +17,54 @@ namespace SpaceShooter
             damage, //skada som skott gör
             projectileSize, //storlek på skott
             fireSpeed, //antal millisekunder mellan skott
+            projectileSpeed, //hur snabbt skott färdas
             spread; //spridning av skott
         
-        public ShipStats() //konstruktor för spelare
+        public ShipStats() //normal konstruktor, används för uppgradering
         {
-            this.mass = 1f;
-            this.health = 1f;
-            this.speed = 0.06f;
-
-            this.projectilesPerShot = 1f;
-            this.damage = 0.8f;
-            this.projectileSize = 4f;
-            this.fireSpeed = 250f;
-            this.spread = 0f;
-        }
-
-        //name??? vad sjutton
-        public ShipStats(string name) //konstruktor för fiende 
-        {
-            this.mass = Math.Clamp(Common.random.Next(1, 4) * (float)Common.random.NextDouble(), 1.5f, 8);
-            this.speed = 2 / this.mass;
-            this.health = this.mass;
+            this.mass = 0f;
+            this.health = 0f;
+            this.speed = 0f;
 
             this.projectilesPerShot = 0f;
             this.damage = 0f;
             this.projectileSize = 0f;
             this.fireSpeed = 0f;
+            this.projectileSpeed = 0f;
             this.spread = 0f;
         }
 
-        public ShipStats(float mass, float speed, float health, float projectilesPerShot, float damage, float projectileSize, float fireSpeed, float spread)
+        //name??? vad sjutton
+        public ShipStats(string name) //konstruktor för fiende samt spelare
         {
-            this.mass = mass;
-            this.speed = speed;
-            this.health = health;
+            switch (name)
+            {
+                case "enemy":
+                    this.mass = Math.Clamp(Common.random.Next(1, 4) * (float)Common.random.NextDouble(), 1.5f, 8);
+                    this.speed = 2 / this.mass;
+                    this.health = this.mass;
 
-            this.projectilesPerShot = projectilesPerShot;
-            this.damage = damage;
-            this.projectileSize = projectileSize;
-            this.fireSpeed = fireSpeed;
-            this.spread = spread;
+                    this.projectilesPerShot = 0f;
+                    this.damage = 0f;
+                    this.projectileSize = 0f;
+                    this.fireSpeed = 0f;
+                    this.projectileSpeed = 0f;
+                    this.spread = 0f;
+                    break;
+
+                case "player":
+                    this.mass = 1f;
+                    this.health = 1f;
+                    this.speed = 0.06f;
+
+                    this.projectilesPerShot = 1f;
+                    this.damage = 0.8f;
+                    this.projectileSize = 4f;
+                    this.fireSpeed = 250f;
+                    this.projectileSpeed = 1f;
+                    this.spread = 0f;
+                    break;
+            }
         }
     }
 }

@@ -14,8 +14,6 @@ namespace SpaceShooter
      *
      * - Tweaka spawnrate
      * - Be om ett namn
-     * - Fixa knappen
-     * - Efter en viss mängd score får du välja mellan uppgraderingar
      * 
      * om tid
      * - Inte omedelbar rotation
@@ -33,7 +31,10 @@ namespace SpaceShooter
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public static MouseState mouseState;
+        public static MouseState 
+            mouseState,
+            previousMouseState;
+
         public static KeyboardState keyboardState;
         public static Rectangle window;
 
@@ -44,6 +45,7 @@ namespace SpaceShooter
         static Dictionary<string, int> highscores;
 
         static string scoreFilepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"onslaughtHighscores.txt");
+        //filvägen blir till ...user/AppData/Local/onslaughtHighscores.txt
 
         public Game1()
         {
@@ -83,7 +85,7 @@ namespace SpaceShooter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (menu != null)
+            if (menu != null) //strukturen uppdaterar den "scen" som är aktiv
             {
                 menu.Update(gameTime);
             }
@@ -96,6 +98,7 @@ namespace SpaceShooter
                 endScreen.Update(gameTime);
             }
 
+            previousMouseState = mouseState;
             base.Update(gameTime);
         }
 
@@ -155,18 +158,18 @@ namespace SpaceShooter
 
         public static void ExecuteButton(string button)
         {
-            switch(button)
+            switch(button) //inte en elegant lösning men aktiverar beroende på knapp
             {
-                case "startText":
+                case "startText": //start på menu
                     StartLevel();
                     menu = null;
                     break;
                 
-                case "exitButton":
-                    
+                case "quitText": //avsluta på menu och gameover
+                    Environment.Exit(0);
                     break;
 
-                case "gameoverText":
+                case "gameoverText": //starta om på gameover
                     StartLevel();
                     endScreen = null;
                     break;
@@ -177,7 +180,7 @@ namespace SpaceShooter
         {
             UpdateHighscore(score);
 
-            endScreen = new EndScreen(score);
+            endScreen = new EndScreen();
             endScreen.ShowHighscores(highscores);
 
             level = null;
@@ -192,7 +195,7 @@ namespace SpaceShooter
         {
             if (highscores.Count >= 10)
             {
-                if (score > highscores.Values.Min())
+                if (score > highscores.Values.Min()) //tar bort lägsta scoren om antalet överskrider 10
                 {
                     AddHighscore(score);
                     highscores.Remove(highscores.Keys.Min());
@@ -203,17 +206,19 @@ namespace SpaceShooter
                 AddHighscore(score);
             }
 
+            //sorterar highscorelistan efter minskande poäng. inte helt säker på HUR den fungerar
             highscores = highscores.OrderByDescending(key => key.Value).ToDictionary(key => key.Key, key => key.Value);
             SaveHighscore();
         }
 
         static void SaveHighscore()
         {
-            File.WriteAllText(scoreFilepath, JsonSerializer.Serialize(highscores));
+            File.WriteAllText(scoreFilepath, JsonSerializer.Serialize(highscores)); //sparar highscore
         }
 
         static string AskForName()
         {
+            //genererar slumpmässigt namn, lär ändras i framtiden. Inte så viktigt för lokal highscore dock
             string tempString = "";
 
             for(int i = 0; i < 5; i++)
